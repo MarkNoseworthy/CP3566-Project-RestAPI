@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Enrollment {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer eid;
     private Integer courseId;
     private Integer studentId;

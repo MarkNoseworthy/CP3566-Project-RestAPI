@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Programs {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer pid;
     private String programName;
     private String campus;

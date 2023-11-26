@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Course {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer courseId;
     private String courseName;
     private String courseNumber;
