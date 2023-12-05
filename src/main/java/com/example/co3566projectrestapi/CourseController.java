@@ -14,18 +14,8 @@ public class CourseController {
     private CourseRepository courseRepository;
 
     @PostMapping(path = "/add")
-    public @ResponseBody String addNewCourse(@RequestParam String courseName, @RequestParam String courseNumber
-    , @RequestParam Integer capacity, @RequestParam Integer year, @RequestParam String semester
-    , @RequestParam Integer pid) {
-        Course course = new Course();
-        course.setCourseName(courseName);
-        course.setCourseNumber(courseNumber);
-        course.setCapacity(capacity);
-        course.setSemester(semester);
-        course.setYear(year);
-        course.setPid(pid);
-        courseRepository.save(course);
-        return "Saved";
+    public @ResponseBody Course addNewCourse(@RequestBody Course course) {
+        return courseRepository.save(course);
     }
     @GetMapping(path = "/all")
     public @ResponseBody Iterable<Course> getAllCourses() {

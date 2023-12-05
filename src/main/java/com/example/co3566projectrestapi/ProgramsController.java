@@ -14,13 +14,8 @@ public class ProgramsController {
     private ProgramsRepository programsRepository;
 
     @PostMapping(path = "/add")
-    public @ResponseBody String addNewProgram(@RequestParam String programName
-            , @RequestParam String campus) {
-        Programs programs = new Programs();
-        programs.setProgramName(programName);
-        programs.setCampus(campus);
-        programsRepository.save(programs);
-        return "Saved";
+    public @ResponseBody Programs addNewProgram(@RequestBody Programs programs) {
+        return programsRepository.save(programs);
     }
 
     @GetMapping(path = "/all")

@@ -14,14 +14,8 @@ public class GradesController {
     private GradesRepository gradesRepository;
 
     @PostMapping(path = "/add")
-    public @ResponseBody String addNewGrades(@RequestParam Integer studentId
-    , @RequestParam Integer courseId, @RequestParam Integer grade) {
-        Grades grades = new Grades();
-        grades.setStudentId(studentId);
-        grades.setCourseId(courseId);
-        grades.setGrade(grade);
-        gradesRepository.save(grades);
-        return "Saved";
+    public @ResponseBody Grades addNewGrades(@RequestBody Grades grades) {
+        return gradesRepository.save(grades);
     }
 
     @GetMapping(path = "/all/{studentId}")

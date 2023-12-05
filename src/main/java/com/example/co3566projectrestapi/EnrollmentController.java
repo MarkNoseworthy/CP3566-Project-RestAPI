@@ -14,13 +14,8 @@ public class EnrollmentController {
     private EnrollmentRepository enrollmentRepository;
 
     @PostMapping(path = "/add")
-    public @ResponseBody String addNewEnrollment(@RequestParam Integer courseId
-    , @RequestParam Integer studentId) {
-        Enrollment enrollment = new Enrollment();
-        enrollment.setCourseId(courseId);
-        enrollment.setStudentId(studentId);
-        enrollmentRepository.save(enrollment);
-        return "Saved";
+    public @ResponseBody Enrollment addNewEnrollment(@RequestBody Enrollment enrollment) {
+        return enrollmentRepository.save(enrollment);
     }
 
     @GetMapping(path = "/all/{courseId}")

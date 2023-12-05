@@ -14,19 +14,9 @@ public class StudentController {
     private StudentRepository studentRepository;
 
     @PostMapping(path = "/add")
-    public @ResponseBody String addNewUser (@RequestParam String firstName, @RequestParam String lastName
-    , @RequestParam String email, @RequestParam String address, @RequestParam String city
-    , @RequestParam String postal, @RequestParam String phone) {
-        Student student = new Student();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setEmail(email);
-        student.setAddress(address);
-        student.setCity(city);
-        student.setPostal(postal);
-        student.setPhone(phone);
-        studentRepository.save(student);
-        return "Saved";
+    public @ResponseBody Student addNewUser (@RequestBody Student student) {
+        return studentRepository.save(student);
+
     }
 
     @GetMapping(path = "/all")
