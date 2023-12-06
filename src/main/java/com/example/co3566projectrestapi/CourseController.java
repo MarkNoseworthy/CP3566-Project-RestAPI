@@ -28,24 +28,27 @@ public class CourseController {
     }
 
     @PutMapping(path = "/modify/{courseId}")
-    public @ResponseBody String modifyCourse(@PathVariable("courseId") Integer courseId, @RequestParam String courseName
-            , @RequestParam String courseNumber, @RequestParam Integer capacity, @RequestParam Integer year
-    , @RequestParam String semester, @RequestParam Integer pid) {
-        Course course = courseRepository.findById(courseId).get();
-        course.setCourseName(courseName);
-        course.setCourseNumber(courseNumber);
-        course.setCapacity(capacity);
-        course.setYear(year);
-        course.setSemester(semester);
-        course.setPid(pid);
-        courseRepository.save(course);
-        return "Updated";
+    public @ResponseBody Object modifyCourse(@PathVariable("courseId") Integer courseId, @RequestBody Course courseDetails) {
+        if (courseRepository.findById(courseId).isPresent()) {
+            Course course = courseRepository.findById(courseId).get();
+            course.setCourseName(courseDetails.getCourseName());
+            course.setCourseNumber(courseDetails.getCourseNumber());
+            course.setCapacity(courseDetails.getCapacity());
+            course.setYear(courseDetails.getYear());
+            course.setSemester(courseDetails.getSemester());
+            course.setPid(courseDetails.getPid());
+            return courseRepository.save(course);
+        }
+        return "Does not exist.";
     }
 
     @DeleteMapping(path = "/delete/{courseId}")
-    public @ResponseBody String deleteCourse(@PathVariable("courseId") Integer courseId) {
-        courseRepository.deleteById(courseId);
-        return "Deleted";
+    public @ResponseBody Object deleteCourse(@PathVariable("courseId") Integer courseId) {
+        if (courseRepository.findById(courseId).isPresent()) {
+            courseRepository.deleteById(courseId);
+            return courseRepository.findById(courseId);
+        }
+        return "Does not exist.";
     }
 
 }

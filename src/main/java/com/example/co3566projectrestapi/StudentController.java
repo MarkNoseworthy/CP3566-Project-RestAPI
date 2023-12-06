@@ -16,7 +16,6 @@ public class StudentController {
     @PostMapping(path = "/add")
     public @ResponseBody Student addNewUser (@RequestBody Student student) {
         return studentRepository.save(student);
-
     }
 
     @GetMapping(path = "/all")
@@ -30,25 +29,28 @@ public class StudentController {
     }
 
     @PutMapping(path = "/modify/{studentId}")
-    public @ResponseBody String modifyStudent(@PathVariable("studentId") Integer studentId, @RequestParam String firstName
-            , @RequestParam String lastName, @RequestParam String email, @RequestParam String address, @RequestParam String city
-            , @RequestParam String postal, @RequestParam String phone) {
-        Student student = studentRepository.findById(studentId).get();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setEmail(email);
-        student.setAddress(address);
-        student.setCity(city);
-        student.setPostal(postal);
-        student.setPhone(phone);
-        studentRepository.save(student);
-        return "Updated";
+    public @ResponseBody Object modifyStudent(@PathVariable("studentId") Integer studentId, @RequestBody Student studentDetails) {
+        if (studentRepository.findById(studentId).isPresent()) {
+            Student student = studentRepository.findById(studentId).get();
+            student.setFirstName(studentDetails.getFirstName());
+            student.setLastName(studentDetails.getLastName());
+            student.setEmail(studentDetails.getEmail());
+            student.setAddress(studentDetails.getAddress());
+            student.setCity(studentDetails.getCity());
+            student.setPostal(studentDetails.getPostal());
+            student.setPhone(studentDetails.getPhone());
+            return studentRepository.save(student);
+        }
+        return "Does not exist.";
     }
 
     @DeleteMapping(path = "/delete/{studentId}")
-    public @ResponseBody String deleteStudent(@PathVariable("studentId") Integer studentId) {
-        studentRepository.deleteById(studentId);
-        return "Deleted";
+    public @ResponseBody Object deleteStudent(@PathVariable("studentId") Integer studentId) {
+        if (studentRepository.findById(studentId).isPresent()) {
+            studentRepository.deleteById(studentId);
+            return studentRepository.findById(studentId);
+        }
+        return "Does not exist.";
     }
 
 }

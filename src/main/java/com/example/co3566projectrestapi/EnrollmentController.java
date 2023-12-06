@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping(path = "/api/cna/enrollment")
 public class EnrollmentController {
@@ -18,28 +16,32 @@ public class EnrollmentController {
         return enrollmentRepository.save(enrollment);
     }
 
-    @GetMapping(path = "/all/{courseId}")
-    public @ResponseBody Optional<Enrollment> getCourseEnrollment(@PathVariable("courseId") Integer courseId) {
-        return enrollmentRepository.findById(courseId);
+    @GetMapping(path = "/list-by-course/{courseId}")
+    public @ResponseBody Iterable<Enrollment> getCourseEnrollment(@PathVariable("courseId") Integer courseId) {
+        return enrollmentRepository.findByCourseId(courseId);
     }
-    @GetMapping(path = "/view/{studentId}")
-    public @ResponseBody Optional<Enrollment> getStudentEnrollment(@PathVariable("studentId") Integer studentId) {
-        return enrollmentRepository.findById(studentId);
+    @GetMapping(path = "/list-by-student/{studentId}")
+    public @ResponseBody Iterable<Enrollment> getStudentEnrollment(@PathVariable("studentId") Integer studentId) {
+        return enrollmentRepository.findByStudentId(studentId);
     }
     @PutMapping(path = "/modify/{eid}")
-    public @ResponseBody String modifyEnrollment(@PathVariable("eid") Integer eid, @RequestParam Integer courseId
-    , @RequestParam Integer studentId) {
-        Enrollment enrollment = enrollmentRepository.findById(eid).get();
-        enrollment.setCourseId(courseId);
-        enrollment.setStudentId(studentId);
-        enrollmentRepository.save(enrollment);
-        return "Updated";
+    public @ResponseBody Object modifyEnrollment(@PathVariable("eid") Integer eid, @RequestBody Enrollment enrollmentDetails) {
+        if (enrollmentRepository.findById(eid).isPresent()) {
+            Enrollment enrollment = enrollmentRepository.findById(eid).get();
+            enrollment.setCourseId(enrollmentDetails.getCourseId());
+            enrollment.setStudentId(enrollmentDetails.getStudentId());
+            return enrollmentRepository.save(enrollment);
+        }
+        return "Does not exist.";
     }
 
     @DeleteMapping(path = "/delete/{eid}")
-    public @ResponseBody String deleteEnrollment(@PathVariable("eid") Integer eid) {
-        enrollmentRepository.deleteById(eid);
-        return "Deleted";
+    public @ResponseBody Object deleteEnrollment(@PathVariable("eid") Integer eid) {
+        if (enrollmentRepository.findById(eid).isPresent()) {
+            enrollmentRepository.deleteById(eid);
+            return enrollmentRepository.findById(eid);
+        }
+        return "Does not exist.";
     }
 
 }

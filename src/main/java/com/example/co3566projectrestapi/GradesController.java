@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping(path = "/api/cna/grades")
 public class GradesController {
@@ -18,31 +16,35 @@ public class GradesController {
         return gradesRepository.save(grades);
     }
 
-    @GetMapping(path = "/all/{studentId}")
-    public @ResponseBody Optional<Grades> getStudentGrades(@PathVariable("studentId") Integer studentId) {
-        return gradesRepository.findById(studentId);
+    @GetMapping(path = "/list-by-student/{studentId}")
+    public @ResponseBody Iterable<Grades> getStudentGrades(@PathVariable("studentId") Integer studentId) {
+        return gradesRepository.findByStudentId(studentId);
     }
 
-    @GetMapping(path = "/all/{courseId}")
-    public @ResponseBody Optional<Grades> getCourseGrades(@PathVariable("courseId") Integer courseId) {
-        return gradesRepository.findById(courseId);
+    @GetMapping(path = "/list-by-course/{courseId}")
+    public @ResponseBody Iterable<Grades> getCourseGrades(@PathVariable("courseId") Integer courseId) {
+        return gradesRepository.findByCourseId(courseId);
     }
 
     @PutMapping(path = "/modify/{gid}")
-    public @ResponseBody String modifyGrade(@PathVariable("gid") Integer gid, @RequestParam Integer studentId
-    , @RequestParam Integer courseId, @RequestParam Integer grade) {
-        Grades grades = gradesRepository.findById(gid).get();
-        grades.setStudentId(studentId);
-        grades.setCourseId(courseId);
-        grades.setGrade(grade);
-        gradesRepository.save(grades);
-        return "Updated";
+    public @ResponseBody Object modifyGrade(@PathVariable("gid") Integer gid, @RequestBody Grades gradesDetails) {
+        if (gradesRepository.findById(gid).isPresent()) {
+            Grades grades = gradesRepository.findById(gid).get();
+            grades.setStudentId(gradesDetails.getStudentId());
+            grades.setCourseId(gradesDetails.getCourseId());
+            grades.setGrade(gradesDetails.getGrade());
+            return gradesRepository.save(grades);
+        }
+        return "Does not exist";
     }
 
     @DeleteMapping(path = "/delete/{gid}")
-    public @ResponseBody String deleteGrade(@PathVariable("gid") Integer gid) {
-        gradesRepository.deleteById(gid);
-        return "Deleted";
+    public @ResponseBody Object deleteGrade(@PathVariable("gid") Integer gid) {
+        if (gradesRepository.findById(gid).isPresent()) {
+            gradesRepository.deleteById(gid);
+            return gradesRepository.findById(gid);
+        }
+        return "Does not exist";
     }
 
 }

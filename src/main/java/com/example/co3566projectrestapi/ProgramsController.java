@@ -29,19 +29,23 @@ public class ProgramsController {
     }
 
     @PutMapping(path = "/modify/{pid}")
-    public @ResponseBody String modifyProgram(@PathVariable("pid") Integer pid, @RequestParam String programName
-            , @RequestParam String campus) {
-        Programs programs = programsRepository.findById(pid).get();
-        programs.setProgramName(programName);
-        programs.setCampus(campus);
-        programsRepository.save(programs);
-        return "Updated";
+    public @ResponseBody Object modifyProgram(@PathVariable("pid") Integer pid, @RequestBody Programs programsDetails) {
+        if (programsRepository.findById(pid).isPresent()) {
+            Programs programs = programsRepository.findById(pid).get();
+            programs.setProgramName(programsDetails.getProgramName());
+            programs.setCampus(programsDetails.getCampus());
+            return programsRepository.save(programs);
+        }
+        return "Does not exist.";
     }
 
     @DeleteMapping(path = "/delete/{pid}")
-    public @ResponseBody String deleteProgram(@PathVariable("pid") Integer pid) {
-        programsRepository.deleteById(pid);
-        return "Deleted";
+    public @ResponseBody Object deleteProgram(@PathVariable("pid") Integer pid) {
+        if (programsRepository.findById(pid).isPresent()) {
+            programsRepository.deleteById(pid);
+            return programsRepository.findById(pid);
+        }
+        return "Does not exist.";
     }
 
 }
